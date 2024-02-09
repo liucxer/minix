@@ -3,6 +3,7 @@ module github.com/liucxer/minix
 go 1.17
 
 require (
+	github.com/bits-and-blooms/bitset v1.13.0
 	github.com/kent007/linux-inspect v1.0.8
 	github.com/sirupsen/logrus v1.9.3
 )
