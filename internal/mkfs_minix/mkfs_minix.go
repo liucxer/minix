@@ -1,12 +1,10 @@
 package mkfs_minix
 
 import (
-	"fmt"
 	"github.com/bits-and-blooms/bitset"
 	"github.com/kent007/linux-inspect/etc"
 	"github.com/liucxer/minix/internal/pkg"
 	"github.com/sirupsen/logrus"
-	"math/rand"
 	"unsafe"
 )
 
@@ -96,19 +94,16 @@ func InitBootBlock() [MINIX_BLOCK_SIZE]byte {
 	return bootBootBlock
 }
 
-func InitInodeBitMap() {
+func InitInodeBitMap(superBlock pkg.SuperBlock) bitset.BitSet {
 	var b bitset.BitSet
-	// play some Go Fish
-	for i := 0; i < 100; i++ {
-		card1 := uint(rand.Intn(52))
-		card2 := uint(rand.Intn(52))
-		b.Set(card1)
-		if b.Test(card2) {
-			fmt.Println("Go Fish!")
-		}
-		b.Clear(card1)
+
+	for i := 0; i < int(superBlock.InodeBitmapBlocksNum)*MINIX_BLOCK_SIZE*8; i++ {
+		b.Set(uint(i))
 	}
-	b.Bytes()
+	for i := 0; i < int(superBlock.InodeNum); i++ {
+		b.Clear(uint(i))
+	}
+	return b
 }
 
 func InitDataBlockBitMap() {

@@ -60,12 +60,18 @@ func main() {
 	// 初始化root block
 	rootBlock := mkfs_minix.InitRootBlock()
 
-	// 初始化boot block
+	// 初始化boot block, todo 实现磁盘写入
 	bootBlock := mkfs_minix.InitBootBlock()
 
-	// 初始化super block
+	// 初始化super block, todo 实现磁盘写入
 	superBlock := mkfs_minix.InitSuperBlock()
 
+	// inodeBitmap
+	// dataBlockBitmap
+	// inodeTable: 根节点inode信息
+	// dataBlock:  根节点数据块
+
+	SetupTables()
 	fileInfo, err := os.Stat(deviceName)
 	if err != nil {
 		logrus.Errorf("os.Stat err:%v, path:%s", err, deviceName)
@@ -78,11 +84,27 @@ func main() {
 		return
 	}
 
+	defer func() {
+		_ = file.Close()
+	}()
+
+	//setup_tables(); // 初始化super_block_buffer、inode_map、zone_map
+	//if (check)
+	//	check_blocks(); // 检查是否存在坏块，如果存在则打印出来, 检查方式: 执行lseek和read函数，看是否有报错
+	//else if (listfile)
+	//	get_list_blocks(listfile); // 从指定文件中读取坏块列表， 此文件每行代表一个坏块编号， 且坏块数量会被打印出来
+	//
+	//make_root_inode();  // 将root_block写入磁盘中inode表中, 在inode_map里面 标记已经使用的inode, 只有root node,
+
+	//mark_good_blocks(); // 在zone_map里面 标记已经使用的block, 只有root block
+	//write_tables();     // 将boot_block_buffer、super_block_buffer、inode_map、zone_map、inode_buffer写入磁盘
+
 	_ = file
 	_ = fileInfo
 	_ = bootBlock
 	_ = rootBlock
 	_ = superBlock
-	SetupTables()
+
 	fmt.Println("11")
+
 }
